@@ -3,31 +3,119 @@
   "WorkspaceRootPath": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\dashboardpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\dashboardpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\appshell.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:appshell.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\useradminpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\useradminpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\useradminpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\useradminpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\useradminpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\useradminpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\inventorypage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\inventorypage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\inventorypage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\inventorypage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\loginpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\loginpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\loginpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\loginpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pagemodels\\loginpagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pagemodels\\loginpagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\productionorderpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\productionorderpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\dashboardpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\dashboardpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\receiptpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\receiptpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\receiptpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\receiptpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\productionorderpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\productionorderpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\pages\\dashboardpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:pages\\dashboardpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Utilizador\\AppData\\Local\\Temp\\.vsdbgsrc\\c4b4fe2fbd2a7270ed844af9baea5c7c6e786f7abc898356db7a0e8c87cccf6e\\_EventSource_global__Microsoft_UI_Xaml_UnhandledExceptionEventHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\models\\stockmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:models\\stockmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\services\\stockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:services\\stockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|c:\\users\\utilizador\\documents\\managing\\managing\\services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{35BF947A-BB73-4A2F-BADB-18C2FA900B8E}|Managing.csproj|solutionrelative:services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -37,11 +125,276 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DashboardPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.xaml.cs",
+              "RelativeDocumentMoniker": "Pages\\DashboardPage.xaml.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.xaml.cs",
+              "RelativeToolTip": "Pages\\DashboardPage.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T15:06:53.457Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "MauiProgram.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\MauiProgram.cs",
+              "RelativeDocumentMoniker": "MauiProgram.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\MauiProgram.cs",
+              "RelativeToolTip": "MauiProgram.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAwwBgAAABsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T15:06:36.223Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\ProductService.cs",
+              "RelativeDocumentMoniker": "Services\\ProductService.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\ProductService.cs",
+              "RelativeToolTip": "Services\\ProductService.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAApwB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:58:04.956Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "PredictionService.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\PredictionService.cs",
+              "RelativeDocumentMoniker": "Services\\PredictionService.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\PredictionService.cs",
+              "RelativeToolTip": "Services\\PredictionService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:58:04.935Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "StockService.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\StockService.cs",
+              "RelativeDocumentMoniker": "Services\\StockService.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\StockService.cs",
+              "RelativeToolTip": "Services\\StockService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:58:04.875Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAABRwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:54:55.492Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "StockModels.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Models\\StockModels.cs",
+              "RelativeDocumentMoniker": "Models\\StockModels.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Models\\StockModels.cs",
+              "RelativeToolTip": "Models\\StockModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:54:31.782Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "LoginPageModel.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\PageModels\\LoginPageModel.cs",
+              "RelativeDocumentMoniker": "PageModels\\LoginPageModel.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\PageModels\\LoginPageModel.cs",
+              "RelativeToolTip": "PageModels\\LoginPageModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:26:43.759Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\AuthService.cs",
+              "RelativeToolTip": "Services\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAACMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:26:08.327Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\IAuthService.cs",
+              "RelativeDocumentMoniker": "Services\\IAuthService.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Services\\IAuthService.cs",
+              "RelativeToolTip": "Services\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:25:56.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:25:49.195Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\App.xaml.cs",
+              "RelativeDocumentMoniker": "App.xaml.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\App.xaml.cs",
+              "RelativeToolTip": "App.xaml.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAewCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:18:16.518Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ProductionOrderPage.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ProductionOrderPage.cs",
+              "RelativeDocumentMoniker": "Pages\\ProductionOrderPage.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ProductionOrderPage.cs",
+              "RelativeToolTip": "Pages\\ProductionOrderPage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:02:08.19Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "LoginPage.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\LoginPage.cs",
+              "RelativeDocumentMoniker": "Pages\\LoginPage.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\LoginPage.cs",
+              "RelativeToolTip": "Pages\\LoginPage.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAnwCMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:02:03.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "DashboardPage.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.cs",
+              "RelativeDocumentMoniker": "Pages\\DashboardPage.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.cs",
+              "RelativeToolTip": "Pages\\DashboardPage.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAIBJwDQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T14:01:46.27Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "ReceiptPage.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ReceiptPage.cs",
+              "RelativeDocumentMoniker": "Pages\\ReceiptPage.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ReceiptPage.cs",
+              "RelativeToolTip": "Pages\\ReceiptPage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T13:58:22.549Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ProductionOrderPage.xaml",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ProductionOrderPage.xaml",
+              "RelativeDocumentMoniker": "Pages\\ProductionOrderPage.xaml",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ProductionOrderPage.xaml",
+              "RelativeToolTip": "Pages\\ProductionOrderPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-23T13:58:08.65Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "InventoryPage.xaml",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\InventoryPage.xaml",
+              "RelativeDocumentMoniker": "Pages\\InventoryPage.xaml",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\InventoryPage.xaml",
+              "RelativeToolTip": "Pages\\InventoryPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-23T13:57:50.369Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "InventoryPage.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\InventoryPage.cs",
+              "RelativeDocumentMoniker": "Pages\\InventoryPage.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\InventoryPage.cs",
+              "RelativeToolTip": "Pages\\InventoryPage.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAewFoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T13:57:45.76Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "DashboardPage.xaml",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.xaml",
+              "RelativeDocumentMoniker": "Pages\\DashboardPage.xaml",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\DashboardPage.xaml",
+              "RelativeToolTip": "Pages\\DashboardPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-23T13:57:18.729Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "LoginPage.xaml",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\LoginPage.xaml",
+              "RelativeDocumentMoniker": "Pages\\LoginPage.xaml",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\LoginPage.xaml",
+              "RelativeToolTip": "Pages\\LoginPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-23T13:56:28.475Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AppShell.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\AppShell.xaml.cs",
+              "RelativeDocumentMoniker": "AppShell.xaml.cs",
+              "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\AppShell.xaml.cs",
+              "RelativeToolTip": "AppShell.xaml.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAewFAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T13:50:50.728Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AppShell.xaml",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\AppShell.xaml",
               "RelativeDocumentMoniker": "AppShell.xaml",
@@ -53,7 +406,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 12,
               "Title": "GlobalUsings.cs",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\GlobalUsings.cs",
               "RelativeDocumentMoniker": "GlobalUsings.cs",
@@ -65,7 +418,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 24,
               "Title": "_EventSource_global__Microsoft_UI_Xaml_UnhandledExceptionEventHandler.cs",
               "DocumentMoniker": "C:\\Users\\Utilizador\\AppData\\Local\\Temp\\.vsdbgsrc\\c4b4fe2fbd2a7270ed844af9baea5c7c6e786f7abc898356db7a0e8c87cccf6e\\_EventSource_global__Microsoft_UI_Xaml_UnhandledExceptionEventHandler.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\c4b4fe2fbd2a7270ed844af9baea5c7c6e786f7abc898356db7a0e8c87cccf6e\\_EventSource_global__Microsoft_UI_Xaml_UnhandledExceptionEventHandler.cs",
@@ -78,32 +431,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 23,
               "Title": "App.g.i.cs",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs",
               "RelativeDocumentMoniker": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs",
               "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs",
               "RelativeToolTip": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAEwEUAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAvwEQAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T12:52:23.194Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T12:52:23.194Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 19,
               "Title": "ReceiptPage.xaml",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ReceiptPage.xaml",
               "RelativeDocumentMoniker": "Pages\\ReceiptPage.xaml",
               "ToolTip": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\ReceiptPage.xaml",
               "RelativeToolTip": "Pages\\ReceiptPage.xaml",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-05-23T12:49:28.031Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
               "Title": "UserAdminPage.xaml.cs",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\UserAdminPage.xaml.cs",
               "RelativeDocumentMoniker": "Pages\\UserAdminPage.xaml.cs",
@@ -115,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "UserAdminPage.xaml",
               "DocumentMoniker": "C:\\Users\\Utilizador\\Documents\\Managing\\Managing\\Pages\\UserAdminPage.xaml",
               "RelativeDocumentMoniker": "Pages\\UserAdminPage.xaml",

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Managing.Pages
 {
-    internal class ProductionOrderPage
+    public partial class ProductionOrderPage
     {
     }
 }

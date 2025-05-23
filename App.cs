@@ -1,0 +1,1 @@
+// This file is now empty. The App class logic is in App.xaml.cs.

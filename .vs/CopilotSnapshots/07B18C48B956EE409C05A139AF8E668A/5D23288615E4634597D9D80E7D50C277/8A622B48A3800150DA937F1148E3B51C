@@ -1,0 +1,28 @@
+﻿using System.Linq;
+
+public partial class AppShell : Shell
+{
+    public AppShell()
+    {
+        InitializeComponent();
+        // You can call UpdateMenuVisibility() after login, not here
+    }
+
+    public void UpdateMenuVisibility()
+    {
+        var user = App.CurrentUser;
+        // Example: Hide/show flyout items based on user permissions
+        this.Items.Where(i => i.Title != "Login").ToList().ForEach(i => i.IsVisible = user != null && user.HasPermission(i.Title));
+    }
+}
+
+public class User
+{
+    public string Username { get; set; }
+    public List<string> Permissions { get; set; }
+
+    public bool HasPermission(string page)
+    {
+        return Permissions.Contains(page);
+    }
+}

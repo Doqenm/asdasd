@@ -1,0 +1,58 @@
+﻿public partial class AppShell : Shell
+{
+    public AppShell()
+    {
+        InitializeComponent();
+        UpdateMenuVisibility();
+    }
+
+    public void UpdateMenuVisibility()
+    {
+        var user = App.CurrentUser;
+        // Example: Hide/show flyout items based on user permissions
+        this.Items.Where(i => i.Title != "Login").ToList().ForEach(i => i.IsVisible = user != null && user.HasPermission(i.Title));
+    }
+}
+
+public partial class App : Application
+{
+    public static User? CurrentUser { get; private set; }
+
+    public App()
+    {
+        InitializeComponent();
+        MainPage = new AppShell();
+        CheckAuthentication();
+    }
+
+    private async void CheckAuthentication()
+    {
+        if (CurrentUser == null)
+        {
+            await Shell.Current.GoToAsync("//LoginPage");
+        }
+    }
+
+    public static void SetUser(User user)
+    {
+        CurrentUser = user;
+        // Update menu visibility/permissions here if needed
+    }
+
+    public static void Logout()
+    {
+        CurrentUser = null;
+        Shell.Current.GoToAsync("//LoginPage");
+    }
+}
+
+public class User
+{
+    public string Username { get; set; }
+    public List<string> Permissions { get; set; }
+
+    public bool HasPermission(string page)
+    {
+        return Permissions.Contains(page);
+    }
+}

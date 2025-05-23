@@ -1,0 +1,77 @@
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using Font = Microsoft.Maui.Font;
+using Syncfusion.Maui.Toolkit.SegmentedControl; // Ensure the namespace is included
+using System.Linq;
+
+namespace Managing
+{
+    public partial class AppShell : Shell
+    {
+        public AppShell()
+        {
+            InitializeComponent();
+            
+            // Ensure ThemeSegmentedControl is properly referenced
+           // var themeSegmentedControl = this.FindByName<SfSegmentedControl>("ThemeSegmentedControl");
+            // if (themeSegmentedControl != null)
+           // {
+             //   var currentTheme = Application.Current!.RequestedTheme;
+               // themeSegmentedControl.SelectedIndex = currentTheme == AppTheme.Light ? 0 : 1;
+           // }
+        }
+
+        public static async Task DisplaySnackbarAsync(string message)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            var snackbarOptions = new SnackbarOptions
+            {
+                BackgroundColor = Color.FromArgb("#FF3300"),
+                TextColor = Colors.White,
+                ActionButtonTextColor = Colors.Yellow,
+                CornerRadius = new CornerRadius(0),
+                Font = Font.SystemFontOfSize(18),
+                ActionButtonFont = Font.SystemFontOfSize(14)
+            };
+
+            var snackbar = Snackbar.Make(message, visualOptions: snackbarOptions);
+
+            await snackbar.Show(cancellationTokenSource.Token);
+        }
+
+        public static async Task DisplayToastAsync(string message)
+        {
+            // Toast is currently not working in MCT on Windows
+            if (OperatingSystem.IsWindows())
+                return;
+
+            var toast = Toast.Make(message, textSize: 18);
+
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            await toast.Show(cts.Token);
+        }
+
+        private void SfSegmentedControl_SelectionChanged(object sender, Syncfusion.Maui.Toolkit.SegmentedControl.SelectionChangedEventArgs e)
+        {
+            Application.Current!.UserAppTheme = e.NewIndex == 0 ? AppTheme.Light : AppTheme.Dark;
+        }
+
+        public void UpdateMenuVisibility()
+        {
+            var user = App.CurrentUser;
+            this.Items.Where(i => i.Title != "Login").ToList().ForEach(i => i.IsVisible = user != null && user.HasPermission(i.Title));
+        }
+    }
+
+    public class User
+    {
+        public string Username { get; set; }
+        public List<string> Permissions { get; set; }
+
+        public bool HasPermission(string page)
+        {
+            return Permissions.Contains(page);
+        }
+    }
+}

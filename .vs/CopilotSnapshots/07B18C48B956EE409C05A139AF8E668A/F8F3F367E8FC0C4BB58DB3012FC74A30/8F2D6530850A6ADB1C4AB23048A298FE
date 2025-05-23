@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Managing.Models;
+
+namespace Managing.Services
+{
+    public class AuthService : IAuthService
+    {
+        // For demo: hardcoded users
+        private readonly List<User> _users = new()
+        {
+            new User { Username = "admin", Permissions = new List<string> { "Dashboard", "Receção", "Produção", "Stock", "Admin" } },
+            new User { Username = "user", Permissions = new List<string> { "Dashboard", "Receção", "Produção" } }
+        };
+
+        public Task<User?> AuthenticateAsync(string username, string password)
+        {
+            // For demo, password is always 'password'
+            var user = _users.Find(u => u.Username == username);
+            if (user != null && password == "password")
+                return Task.FromResult<User?>(user);
+            return Task.FromResult<User?>(null);
+        }
+    }
+}

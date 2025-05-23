@@ -1,5 +1,5 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Managing.PageModels.InventoryPage">
+             x:Class="Managing.Pages.InventoryPage">
     <!-- Add your UI elements here -->
 </ContentPage>

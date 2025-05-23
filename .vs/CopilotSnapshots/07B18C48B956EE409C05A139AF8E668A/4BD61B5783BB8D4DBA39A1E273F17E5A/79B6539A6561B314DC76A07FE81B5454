@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using Managing.Services;
+using Managing.Data;
+using Managing.Models;
+using System.Collections.ObjectModel;
+
+namespace Managing.Pages
+{
+    public partial class DashboardPage : ContentPage
+    {
+        private readonly ProductService _productService;
+        private ObservableCollection<Product> _products = new();
+        private ListView _productList;
+
+        public DashboardPage()
+        {
+            InitializeComponent();
+            var db = (Application.Current as App)?.Services.GetService<ApplicationDbContext>();
+            _productService = new ProductService(db!);
+            BuildUI();
+            LoadProducts();
+        }
+
+        private void BuildUI()
+        {
+            _productList = new ListView { ItemsSource = _products, ItemTemplate = new DataTemplate(() => new TextCell { Text = "{Binding Name}", Detail = "{Binding SKU}" }) };
+            Content = new VerticalStackLayout
+            {
+                Padding = 20,
+                Spacing = 10,
+                Children =
+                {
+                    new Label { Text = "Products", FontSize = 24 },
+                    _productList
+                }
+            };
+        }
+
+        private async Task LoadProducts()
+        {
+            _products.Clear();
+            foreach (var p in await _productService.GetProductsAsync())
+                _products.Add(p);
+        }
+    }
+}

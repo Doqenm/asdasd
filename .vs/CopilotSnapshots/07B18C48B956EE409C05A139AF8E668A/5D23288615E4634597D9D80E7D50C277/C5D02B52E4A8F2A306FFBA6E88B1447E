@@ -1,0 +1,29 @@
+﻿using System.Linq;
+
+namespace Managing
+{
+    public partial class AppShell : Shell
+    {
+        public AppShell()
+        {
+            InitializeComponent();
+        }
+
+        public void UpdateMenuVisibility()
+        {
+            var user = App.CurrentUser;
+            this.Items.Where(i => i.Title != "Login").ToList().ForEach(i => i.IsVisible = user != null && user.HasPermission(i.Title));
+        }
+    }
+
+    public class User
+    {
+        public string Username { get; set; }
+        public List<string> Permissions { get; set; }
+
+        public bool HasPermission(string page)
+        {
+            return Permissions.Contains(page);
+        }
+    }
+}

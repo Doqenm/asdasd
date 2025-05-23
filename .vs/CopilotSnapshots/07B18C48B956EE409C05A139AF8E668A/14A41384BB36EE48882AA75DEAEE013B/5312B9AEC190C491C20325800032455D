@@ -1,0 +1,44 @@
+﻿using System.Collections.Generic;
+
+namespace Managing.Models
+{
+    public class Product
+    {
+        public int Id { get; set; }
+        public string SKU { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public List<BOMItem> BOM { get; set; } = new();
+    }
+
+    public class BOMItem
+    {
+        public int Id { get; set; }
+        public string ComponentSKU { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
+
+    public class StockItem
+    {
+        public int Id { get; set; }
+        public string SKU { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
+
+    public class StockHistory
+    {
+        public int Id { get; set; }
+        public string SKU { get; set; } = string.Empty;
+        public int QuantityChange { get; set; }
+        public string Action { get; set; } = string.Empty; // e.g. 'Received', 'Consumed', 'Adjusted'
+        public DateTime Timestamp { get; set; }
+        public string? Note { get; set; }
+    }
+
+    public class ProductionPrediction
+    {
+        public int Id { get; set; }
+        public string ProductSKU { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+}

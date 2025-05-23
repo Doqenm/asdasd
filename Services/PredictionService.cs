@@ -1,0 +1,32 @@
+using Managing.Data;
+using Managing.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Managing.Services
+{
+    public class PredictionService
+    {
+        private readonly ApplicationDbContext _db;
+        public PredictionService(ApplicationDbContext db) => _db = db;
+
+        public async Task<Dictionary<string, int>> CalculateRequirementsAsync(Dictionary<string, int> productQuantities)
+        {
+            var requirements = new Dictionary<string, int>();
+            foreach (var (sku, qty) in productQuantities)
+            {
+                var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+                if (product == null) continue;
+                foreach (var bom in product.BOM)
+                {
+                    if (!requirements.ContainsKey(bom.ComponentSKU))
+                        requirements[bom.ComponentSKU] = 0;
+                    requirements[bom.ComponentSKU] += bom.Quantity * qty;
+                }
+            }
+            return requirements;
+        }
+    }
+}

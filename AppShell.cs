@@ -1,0 +1,1 @@
+// This file is now empty. All AppShell logic is in AppShell.xaml.cs.

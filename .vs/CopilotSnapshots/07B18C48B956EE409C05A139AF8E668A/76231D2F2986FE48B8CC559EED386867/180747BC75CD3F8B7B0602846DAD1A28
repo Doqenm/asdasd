@@ -1,0 +1,57 @@
+﻿using Microsoft.Maui.Controls;
+using Managing;
+
+namespace Managing
+{
+    public partial class App : Application
+    {
+        public static User? CurrentUser { get; private set; }
+
+        public App()
+        {
+            InitializeComponent();
+            MainPage = new AppShell();
+            // Do NOT call CheckAuthentication() here, because Shell.Current is not set yet.
+            // Instead, use the AppShell.OnAppearing or AppShell.OnNavigated event, or handle it in AppShell's constructor after InitializeComponent.
+        }
+
+        private async void CheckAuthentication()
+        {
+            if (CurrentUser == null)
+            {
+                await Shell.Current.GoToAsync("//LoginPage");
+            }
+        }
+
+        public static void SetUser(User user)
+        {
+            CurrentUser = user;
+            // Update menu visibility/permissions here if needed
+        }
+
+        public static void Logout()
+        {
+            CurrentUser = null;
+            Shell.Current.GoToAsync("//LoginPage");
+        }
+    }
+
+    public partial class AppShell : Shell
+    {
+        public AppShell()
+        {
+            InitializeComponent();
+            this.Navigated += AppShell_Navigated;
+        }
+
+        private async void AppShell_Navigated(object sender, ShellNavigatedEventArgs e)
+        {
+            if (App.CurrentUser == null && e.Current.Location.OriginalString != "//LoginPage")
+            {
+                await Shell.Current.GoToAsync("//LoginPage");
+            }
+        }
+
+        // ...existing code...
+    }
+}
