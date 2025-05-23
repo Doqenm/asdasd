@@ -1,0 +1,36 @@
+<Shell
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+  xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
+  xmlns:pages="clr-namespace:Managing.Pages"
+  x:Class="Managing.AppShell">
+
+    <!-- Login (rota modal, sem ícone no flyout) -->
+    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate pages:LoginPage}" />
+
+    <!-- Dashboard -->
+    <FlyoutItem Title="Dashboard" Icon="icon_dashboard.png">
+        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate pages:DashboardPage}" />
+    </FlyoutItem>
+
+    <!-- Receção de Materiais -->
+    <FlyoutItem Title="Receção" Icon="icon_receipt.png">
+        <ShellContent Route="ReceiptPage" ContentTemplate="{DataTemplate pages:ReceiptPage}" />
+    </FlyoutItem>
+
+    <!-- Ordens de Produção -->
+    <FlyoutItem Title="Produção" Icon="icon_production.png">
+        <ShellContent Route="ProductionOrderPage" ContentTemplate="{DataTemplate pages:ProductionOrderPage}" />
+    </FlyoutItem>
+
+    <!-- Stock / Inventário -->
+    <FlyoutItem Title="Stock" Icon="icon_inventory.png">
+        <ShellContent Route="InventoryPage" ContentTemplate="{DataTemplate pages:InventoryPage}" />
+    </FlyoutItem>
+
+    <!-- Gestão de Utilizadores -->
+    <FlyoutItem Title="Admin" Icon="icon_users.png">
+        <ShellContent Route="UserAdminPage" ContentTemplate="{DataTemplate pages:UserAdminPage}" />
+    </FlyoutItem>
+
+</Shell>

@@ -1,0 +1,29 @@
+﻿<ContentPage
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+  xmlns:vm="clr-namespace:Managing.PageModels"
+  x:Class="Managing.Pages.ReceiptPage"
+  Title="Receção de Materiais">
+
+    <ContentPage.BindingContext>
+        <vm:ReceiptPageModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Entry Placeholder="Fornecedor" Text="{Binding Supplier}" />
+        <Entry Placeholder="Lote / Fatura" Text="{Binding LotNumber}" />
+        <Entry Placeholder="Quantidade" Keyboard="Numeric" Text="{Binding Quantity}" />
+        <Button Text="Registar Receção" Command="{Binding RegisterReceiptCommand}" />
+
+        <CollectionView ItemsSource="{Binding Receipts}">
+            <DataTemplate>
+                <Frame Margin="5" Padding="10">
+                    <Label Text="{Binding Supplier}" FontAttributes="Bold" />
+                    <Label Text="{Binding LotNumber}" />
+                    <Label Text="{Binding Quantity}" />
+                    <Label Text="{Binding ReceivedAt}" FontAttributes="Italic" FontSize="Small" />
+                </Frame>
+            </DataTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

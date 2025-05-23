@@ -1,0 +1,9 @@
+﻿namespace Managing.Pages;
+
+public partial class UserAdmingPage : ContentPage
+{
+    public UserAdmingPage()
+    {
+        InitializeComponent();
+    }
+}
