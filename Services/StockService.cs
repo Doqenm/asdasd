@@ -52,6 +52,32 @@ namespace Managing.Services
             await _db.SaveChangesAsync();
         }
 
+        public async Task DeleteStockAsync(string sku, string note = null)
+        {
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == sku);
+            if (item == null)
+                return; // Item doesn't exist, nothing to delete
+            
+            // Record the deletion in history before deleting the item
+            int quantity = item.Quantity;
+            if (quantity > 0)
+            {
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = sku,
+                    QuantityChange = -quantity,
+                    Action = "Deleted",
+                    Timestamp = DateTime.Now,
+                    Note = note ?? "Item deleted from inventory"
+                });
+            }
+            
+            // Remove the item from the StockItems table
+            _db.StockItems.Remove(item);
+            
+            await _db.SaveChangesAsync();
+        }
+
         public async Task<List<StockHistory>> GetStockHistoryAsync() => await _db.StockHistories.OrderByDescending(h => h.Timestamp).ToListAsync();
     }
 }

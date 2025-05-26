@@ -1,0 +1,86 @@
+﻿using System;
+using Managing.Pages;
+using Managing.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+
+namespace Managing
+{
+    // A factory class for creating InventoryPage with dependency injection
+    public class InventoryPageFactory : ContentPage
+    {
+        public InventoryPageFactory()
+        {
+            Title = "Inventory";
+            Content = new StackLayout
+            {
+                Children = 
+                {
+                    new ActivityIndicator 
+                    { 
+                        IsRunning = true,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+            
+            // Delay the actual page creation until we appear
+            this.Appearing += OnPageAppearing;
+        }
+        
+        private async void OnPageAppearing(object sender, EventArgs e)
+        {
+            try
+            {
+                // Only create the page once
+                this.Appearing -= OnPageAppearing;
+                
+                // Get the StockService from DI through IServiceProvider
+                var services = IPlatformApplication.Current?.Services;
+                if (services == null)
+                {
+                    DisplayError("Service provider not available");
+                    return;
+                }
+                
+                var stockService = services.GetService<StockService>();
+                if (stockService == null)
+                {
+                    DisplayError("Stock service not available");
+                    return;
+                }
+                
+                // Create the actual InventoryPage with its dependency
+                var inventoryPage = new InventoryPage(stockService);
+                
+                // Copy content from the real page
+                this.Content = inventoryPage.Content;
+                
+                // Make sure the binding context is set
+                this.BindingContext = inventoryPage.BindingContext;
+            }
+            catch (Exception ex)
+            {
+                DisplayError($"Error loading inventory: {ex.Message}");
+            }
+        }
+        
+        private void DisplayError(string message)
+        {
+            this.Content = new VerticalStackLayout
+            {
+                Padding = 20,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = message,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+        }
+    }
+}

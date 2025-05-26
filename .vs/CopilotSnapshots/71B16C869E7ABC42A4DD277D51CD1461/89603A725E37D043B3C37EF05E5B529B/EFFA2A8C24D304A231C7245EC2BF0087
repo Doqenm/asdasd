@@ -1,0 +1,72 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PredictionController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public PredictionController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // POST: api/prediction/calculate-requirements
+        [HttpPost("calculate-requirements")]
+        public async Task<ActionResult<Dictionary<string, int>>> CalculateRequirements([FromBody] Dictionary<string, int> productQuantities)
+        {
+            if (productQuantities == null || !productQuantities.Any())
+            {
+                return BadRequest("Product quantities cannot be empty");
+            }
+
+            var requirements = new Dictionary<string, int>();
+            
+            foreach (var (sku, qty) in productQuantities)
+            {
+                var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+                if (product == null) continue;
+                
+                foreach (var bom in product.BOM)
+                {
+                    if (!requirements.ContainsKey(bom.ComponentSKU))
+                        requirements[bom.ComponentSKU] = 0;
+                    requirements[bom.ComponentSKU] += bom.Quantity * qty;
+                }
+            }
+            
+            return Ok(requirements);
+        }
+
+        // POST: api/prediction/save
+        [HttpPost("save")]
+        public async Task<ActionResult<ProductionPrediction>> SavePrediction([FromBody] ProductionPrediction prediction)
+        {
+            if (prediction == null || string.IsNullOrEmpty(prediction.ProductSKU))
+            {
+                return BadRequest("Invalid prediction data");
+            }
+
+            prediction.CreatedAt = DateTime.Now;
+            _db.ProductionPredictions.Add(prediction);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetPredictions), new { }, prediction);
+        }
+
+        // GET: api/prediction
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProductionPrediction>>> GetPredictions()
+        {
+            return await _db.ProductionPredictions.OrderByDescending(p => p.CreatedAt).ToListAsync();
+        }
+    }
+}

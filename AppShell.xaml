@@ -3,13 +3,14 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
   xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
   xmlns:pages="clr-namespace:Managing.Pages"
+  xmlns:local="clr-namespace:Managing"
   x:Class="Managing.AppShell">
 
     <!-- Login (rota modal, sem ícone no flyout) -->
-    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate pages:LoginPage}" />
+    <ShellContent Title="Iniciar Sessão" Route="LoginPage" ContentTemplate="{DataTemplate pages:LoginPage}" />
 
     <!-- Dashboard -->
-    <FlyoutItem Title="Dashboard" Icon="icon_dashboard.png">
+    <FlyoutItem Title="Painel" Icon="icon_dashboard.png">
         <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate pages:DashboardPage}" />
     </FlyoutItem>
 
@@ -24,12 +25,12 @@
     </FlyoutItem>
 
     <!-- Stock / Inventário -->
-    <FlyoutItem Title="Stock" Icon="icon_inventory.png">
-        <ShellContent Route="InventoryPage" ContentTemplate="{DataTemplate pages:InventoryPage}" />
+    <FlyoutItem Title="Inventário" Icon="icon_inventory.png">
+        <ShellContent Route="InventoryPage" ContentTemplate="{DataTemplate local:InventoryPageFactory}" />
     </FlyoutItem>
 
     <!-- Gestão de Utilizadores -->
-    <FlyoutItem Title="Admin" Icon="icon_users.png">
+    <FlyoutItem Title="Administração" Icon="icon_users.png">
         <ShellContent Route="UserAdminPage" ContentTemplate="{DataTemplate pages:UserAdminPage}" />
     </FlyoutItem>
 

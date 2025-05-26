@@ -1,0 +1,25 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Managing.API.Models;
+
+namespace Managing.API.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public DbSet<Product> Products { get; set; }
+        public DbSet<BOMItem> BOMItems { get; set; }
+        public DbSet<StockItem> StockItems { get; set; }
+        public DbSet<StockHistory> StockHistories { get; set; }
+        public DbSet<ProductionPrediction> ProductionPredictions { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // Additional configurations, indices, relationships, seeds...
+        }
+    }
+}

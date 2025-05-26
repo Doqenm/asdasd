@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using Managing.Services;
+using Managing.Data;
+using Managing.Models;
+using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Managing.Pages
+{
+    public partial class InventoryPage : ContentPage
+    {
+        private readonly StockService _stockService;
+        public ObservableCollection<StockItem> StockItems { get; set; } = new();
+
+        public InventoryPage()
+        {
+            InitializeComponent();
+            _stockService = Application.Current.Services.GetService<StockService>();
+            BindingContext = this;
+            LoadStock();
+        }
+
+        private async void LoadStock()
+        {
+            var items = await _stockService.GetCurrentStockAsync();
+            StockItems.Clear();
+            foreach (var item in items)
+                StockItems.Add(item);
+        }
+
+        private async void OnAddItemClicked(object sender, EventArgs e)
+        {
+            string sku = await DisplayPromptAsync("Add Stock Item", "Enter SKU:");
+            if (string.IsNullOrWhiteSpace(sku)) return;
+            string qtyStr = await DisplayPromptAsync("Add Stock Item", "Enter Quantity:", keyboard: Keyboard.Numeric);
+            if (!int.TryParse(qtyStr, out int qty) || qty < 0) return;
+            await _stockService.AddStockAsync(sku, qty);
+            LoadStock();
+        }
+
+        private async void OnEditItemClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is StockItem item)
+            {
+                string qtyStr = await DisplayPromptAsync($"Edit {item.SKU}", "Enter new quantity:", initialValue: item.Quantity.ToString(), keyboard: Keyboard.Numeric);
+                if (!int.TryParse(qtyStr, out int newQty) || newQty < 0) return;
+                int diff = newQty - item.Quantity;
+                if (diff == 0) return;
+                if (diff > 0)
+                    await _stockService.AddStockAsync(item.SKU, diff);
+                else
+                    await _stockService.ConsumeStockAsync(item.SKU, -diff);
+                LoadStock();
+            }
+        }
+
+        private async void OnDeleteItemClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is StockItem item)
+            {
+                bool confirm = await DisplayAlert("Delete", $"Delete {item.SKU}?", "Yes", "No");
+                if (!confirm) return;
+                await _stockService.ConsumeStockAsync(item.SKU, item.Quantity);
+                LoadStock();
+            }
+        }
+    }
+}

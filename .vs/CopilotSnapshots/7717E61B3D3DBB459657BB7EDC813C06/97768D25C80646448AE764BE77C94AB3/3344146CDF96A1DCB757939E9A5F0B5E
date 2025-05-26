@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public ProductsController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET: api/products
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            return await _db.Products.Include(p => p.BOM).ToListAsync();
+        }
+
+        // GET: api/products/{sku}
+        [HttpGet("{sku}")]
+        public async Task<ActionResult<Product>> GetProductBySKU(string sku)
+        {
+            var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+
+        // POST: api/products
+        [HttpPost]
+        public async Task<ActionResult<Product>> CreateProduct(Product product)
+        {
+            var existing = await _db.Products.FirstOrDefaultAsync(p => p.SKU == product.SKU);
+            if (existing != null)
+            {
+                // Update existing product instead of creating a duplicate
+                existing.Name = product.Name;
+                
+                // Update BOM items
+                _db.BOMItems.RemoveRange(_db.BOMItems.Where(b => b.Id == existing.Id));
+                existing.BOM = product.BOM;
+                
+                await _db.SaveChangesAsync();
+                return Ok(existing);
+            }
+
+            _db.Products.Add(product);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProductBySKU), new { sku = product.SKU }, product);
+        }
+
+        // PUT: api/products/{sku}
+        [HttpPut("{sku}")]
+        public async Task<IActionResult> UpdateProduct(string sku, Product product)
+        {
+            if (sku != product.SKU)
+            {
+                return BadRequest();
+            }
+
+            var existing = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+            
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            existing.Name = product.Name;
+            
+            // Update BOM items
+            _db.BOMItems.RemoveRange(existing.BOM);
+            existing.BOM = product.BOM;
+            
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // GET: api/products/{sku}/bom
+        [HttpGet("{sku}/bom")]
+        public async Task<ActionResult<IEnumerable<BOMItem>>> GetBOMForProduct(string sku)
+        {
+            var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product.BOM;
+        }
+    }
+}

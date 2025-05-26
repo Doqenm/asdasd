@@ -1,0 +1,198 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class InventoryItemsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public InventoryItemsController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET: api/inventoryitems
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<InventoryItem>>> GetInventoryItems()
+        {
+            return await _db.InventoryItems.ToListAsync();
+        }
+
+        // GET: api/inventoryitems/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<InventoryItem>> GetInventoryItem(int id)
+        {
+            var item = await _db.InventoryItems.FindAsync(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return item;
+        }
+
+        // POST: api/inventoryitems
+        [HttpPost]
+        public async Task<ActionResult<InventoryItem>> CreateInventoryItem(InventoryItem item)
+        {
+            if (item == null)
+            {
+                return BadRequest("Inventory item data is required");
+            }
+
+            // Check if the item with the same SKU already exists
+            var existingItem = await _db.InventoryItems.FirstOrDefaultAsync(i => i.SKU == item.SKU);
+            if (existingItem != null)
+            {
+                return Conflict($"An inventory item with SKU {item.SKU} already exists");
+            }
+
+            item.LastUpdated = DateTime.Now;
+            _db.InventoryItems.Add(item);
+
+            // Synchronize with StockItems if it doesn't exist there
+            var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == item.SKU);
+            if (stockItem == null)
+            {
+                _db.StockItems.Add(new StockItem
+                {
+                    SKU = item.SKU,
+                    Quantity = item.Quantity
+                });
+
+                // Add stock history entry
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = item.SKU,
+                    QuantityChange = item.Quantity,
+                    Action = "Initial",
+                    Timestamp = DateTime.Now,
+                    Note = "Initial inventory setup"
+                });
+            }
+
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetInventoryItem), new { id = item.Id }, item);
+        }
+
+        // PUT: api/inventoryitems/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateInventoryItem(int id, InventoryItem item)
+        {
+            if (id != item.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingItem = await _db.InventoryItems.FindAsync(id);
+            if (existingItem == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate quantity change
+            int quantityChange = item.Quantity - existingItem.Quantity;
+
+            // Update all properties
+            existingItem.ItemName = item.ItemName;
+            existingItem.SKU = item.SKU;
+            existingItem.Quantity = item.Quantity;
+            existingItem.LastUpdated = DateTime.Now;
+
+            // Update corresponding StockItem
+            var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == item.SKU);
+            if (stockItem == null)
+            {
+                // Create new StockItem if it doesn't exist
+                _db.StockItems.Add(new StockItem
+                {
+                    SKU = item.SKU,
+                    Quantity = item.Quantity
+                });
+
+                // Add stock history entry
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = item.SKU,
+                    QuantityChange = item.Quantity,
+                    Action = "Created",
+                    Timestamp = DateTime.Now,
+                    Note = "Created from inventory update"
+                });
+            }
+            else if (quantityChange != 0)
+            {
+                // Update existing StockItem quantity
+                stockItem.Quantity += quantityChange;
+
+                // Add stock history entry
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = item.SKU,
+                    QuantityChange = quantityChange,
+                    Action = quantityChange > 0 ? "Adjusted Up" : "Adjusted Down",
+                    Timestamp = DateTime.Now,
+                    Note = "Updated from inventory adjustment"
+                });
+            }
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _db.InventoryItems.AnyAsync(e => e.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/inventoryitems/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteInventoryItem(int id)
+        {
+            var item = await _db.InventoryItems.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _db.InventoryItems.Remove(item);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // GET: api/inventoryitems/search/{query}
+        [HttpGet("search/{query}")]
+        public async Task<ActionResult<IEnumerable<InventoryItem>>> SearchInventoryItems(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return await _db.InventoryItems.ToListAsync();
+            }
+
+            return await _db.InventoryItems
+                .Where(i => i.ItemName.Contains(query) || i.SKU.Contains(query))
+                .ToListAsync();
+        }
+    }
+}

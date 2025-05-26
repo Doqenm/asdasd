@@ -1,0 +1,57 @@
+﻿using Managing.Data;
+using Managing.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Managing.Services
+{
+    public class StockService
+    {
+        private readonly ApplicationDbContext _db;
+        public StockService(ApplicationDbContext db) => _db = db;
+
+        public async Task<List<StockItem>> GetCurrentStockAsync() => await _db.StockItems.ToListAsync();
+
+        public async Task AddStockAsync(string sku, int quantity, string note = null)
+        {
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == sku);
+            if (item == null)
+            {
+                item = new StockItem { SKU = sku, Quantity = 0 };
+                _db.StockItems.Add(item);
+            }
+            item.Quantity += quantity;
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = sku,
+                QuantityChange = quantity,
+                Action = "Received",
+                Timestamp = DateTime.Now,
+                Note = note
+            });
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task ConsumeStockAsync(string sku, int quantity, string note = null)
+        {
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == sku);
+            if (item == null || item.Quantity < quantity)
+                throw new InvalidOperationException("Not enough stock");
+            item.Quantity -= quantity;
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = sku,
+                QuantityChange = -quantity,
+                Action = "Consumed",
+                Timestamp = DateTime.Now,
+                Note = note
+            });
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<StockHistory>> GetStockHistoryAsync() => await _db.StockHistories.OrderByDescending(h => h.Timestamp).ToListAsync();
+    }
+}

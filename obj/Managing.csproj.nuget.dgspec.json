@@ -76,7 +76,7 @@
             },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -90,7 +90,7 @@
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -108,7 +108,7 @@
             },
             "SQLitePCLRaw.bundle_green": {
               "target": "Package",
-              "version": "[2.1.10, )"
+              "version": "[2.1.11, )"
             },
             "Syncfusion.Maui.Toolkit": {
               "target": "Package",
@@ -149,7 +149,7 @@
             },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -163,7 +163,7 @@
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -181,7 +181,7 @@
             },
             "SQLitePCLRaw.bundle_green": {
               "target": "Package",
-              "version": "[2.1.10, )"
+              "version": "[2.1.11, )"
             },
             "Syncfusion.Maui.Toolkit": {
               "target": "Package",
@@ -222,7 +222,7 @@
             },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -236,7 +236,7 @@
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -254,7 +254,7 @@
             },
             "SQLitePCLRaw.bundle_green": {
               "target": "Package",
-              "version": "[2.1.10, )"
+              "version": "[2.1.11, )"
             },
             "Syncfusion.Maui.Toolkit": {
               "target": "Package",
@@ -296,7 +296,7 @@
             },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -310,7 +310,7 @@
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.5, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -320,9 +320,13 @@
               "target": "Package",
               "version": "[9.0.51, )"
             },
+            "Microsoft.WindowsAppSDK": {
+              "target": "Package",
+              "version": "[1.6.250205002, )"
+            },
             "SQLitePCLRaw.bundle_green": {
               "target": "Package",
-              "version": "[2.1.10, )"
+              "version": "[2.1.11, )"
             },
             "Syncfusion.Maui.Toolkit": {
               "target": "Package",
@@ -364,7 +368,7 @@
         "android-x64": {
           "#import": []
         },
-        "iossimulator-x64": {
+        "ios-arm64": {
           "#import": []
         },
         "maccatalyst-x64": {

@@ -1,0 +1,35 @@
+﻿using System;
+using Managing.Pages;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Managing
+{
+    public class InventoryPageFactory : ContentView
+    {
+        public InventoryPageFactory()
+        {
+            // Use the handler to ensure the page is created when needed
+            this.Loaded += (s, e) => 
+            {
+                try
+                {
+                    // Get an InventoryPage from the service provider
+                    var page = Application.Current.Handler.MauiContext.Services.GetService<InventoryPage>();
+                    
+                    // Set as content
+                    this.Content = page;
+                }
+                catch (Exception ex)
+                {
+                    // Show an error message if something goes wrong
+                    this.Content = new Label 
+                    { 
+                        Text = $"Error loading inventory: {ex.Message}", 
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center 
+                    };
+                }
+            };
+        }
+    }
+}

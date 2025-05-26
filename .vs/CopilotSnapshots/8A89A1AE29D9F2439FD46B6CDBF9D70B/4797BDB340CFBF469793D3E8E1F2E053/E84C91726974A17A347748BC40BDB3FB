@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Managing.Models;
+using Managing.Services;
+using Microsoft.Maui.Controls;
+
+namespace Managing.Pages
+{
+    public partial class LoginPage : ContentPage
+    {
+        private readonly IAuthService _authService = new AuthService();
+
+        private Entry _usernameEntry;
+        private Entry _passwordEntry;
+        private Button _loginButton;
+        private Label _errorLabel;
+
+        public LoginPage()
+        {
+            InitializeComponent();
+            this.Title = string.Empty; // Remove the top left title
+            BuildUI();
+        }
+
+        private void BuildUI()
+        {
+            _usernameEntry = new Entry { Placeholder = "Username" };
+            _passwordEntry = new Entry { Placeholder = "Password", IsPassword = true };
+            _loginButton = new Button { Text = "Login" };
+            _errorLabel = new Label { TextColor = Colors.Red, IsVisible = false };
+            _loginButton.Clicked += LoginButton_Clicked;
+
+            Content = new VerticalStackLayout
+            {
+                Padding = 30,
+                Spacing = 10,
+                Children =
+                {
+                    new Label { Text = "Login", FontSize = 32, HorizontalOptions = LayoutOptions.Center },
+                    _usernameEntry,
+                    _passwordEntry,
+                    _loginButton,
+                    _errorLabel
+                }
+            };
+        }
+
+        private async void LoginButton_Clicked(object sender, System.EventArgs e)
+        {
+            _errorLabel.IsVisible = false;
+            var username = _usernameEntry.Text?.Trim();
+            var password = _passwordEntry.Text;
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                _errorLabel.Text = "Please enter username and password.";
+                _errorLabel.IsVisible = true;
+                return;
+            }
+            var user = await _authService.AuthenticateAsync(username, password);
+            if (user != null)
+            {
+                App.SetUser(user);
+                if (Application.Current.MainPage is Shell shell)
+                {
+                    if (shell is Managing.AppShell appShell)
+                        appShell.UpdateMenuVisibility();
+                    await shell.GoToAsync("//DashboardPage");
+                }
+            }
+            else
+            {
+                _errorLabel.Text = "Invalid username or password.";
+                _errorLabel.IsVisible = true;
+            }
+        }
+    }
+}

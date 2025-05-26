@@ -1,0 +1,230 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductionOrdersController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public ProductionOrdersController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET: api/productionorders
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProductionOrder>>> GetProductionOrders()
+        {
+            return await _db.ProductionOrders.ToListAsync();
+        }
+
+        // GET: api/productionorders/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductionOrder>> GetProductionOrder(int id)
+        {
+            var order = await _db.ProductionOrders.FindAsync(id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return order;
+        }
+
+        // POST: api/productionorders
+        [HttpPost]
+        public async Task<ActionResult<ProductionOrder>> CreateProductionOrder(ProductionOrder order)
+        {
+            if (order == null)
+            {
+                return BadRequest("Order data is required");
+            }
+
+            // Ensure the product exists
+            var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == order.ProductSKU);
+            if (product == null)
+            {
+                return BadRequest($"Product with SKU {order.ProductSKU} does not exist");
+            }
+
+            // Set defaults for new order
+            order.CreatedAt = DateTime.Now;
+            order.Status = "Created";
+            
+            _db.ProductionOrders.Add(order);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProductionOrder), new { id = order.Id }, order);
+        }
+
+        // PUT: api/productionorders/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProductionOrder(int id, ProductionOrder order)
+        {
+            if (id != order.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingOrder = await _db.ProductionOrders.FindAsync(id);
+            if (existingOrder == null)
+            {
+                return NotFound();
+            }
+
+            // Update all properties except CreatedAt, which should remain unchanged
+            existingOrder.ProductSKU = order.ProductSKU;
+            existingOrder.Quantity = order.Quantity;
+            existingOrder.Status = order.Status;
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _db.ProductionOrders.AnyAsync(e => e.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/productionorders/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductionOrder(int id)
+        {
+            var order = await _db.ProductionOrders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            _db.ProductionOrders.Remove(order);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // POST: api/productionorders/{id}/complete
+        [HttpPost("{id}/complete")]
+        public async Task<IActionResult> CompleteProductionOrder(int id)
+        {
+            var order = await _db.ProductionOrders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status == "Completed")
+            {
+                return BadRequest("Order is already completed");
+            }
+
+            // Get the product and its BOM
+            var product = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == order.ProductSKU);
+            if (product == null)
+            {
+                return BadRequest($"Product {order.ProductSKU} does not exist");
+            }
+
+            // Check if we have enough stock for all components
+            foreach (var bomItem in product.BOM)
+            {
+                var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == bomItem.ComponentSKU);
+                int requiredQuantity = bomItem.Quantity * order.Quantity;
+                
+                if (stockItem == null || stockItem.Quantity < requiredQuantity)
+                {
+                    return BadRequest($"Insufficient stock for component {bomItem.ComponentSKU}");
+                }
+            }
+
+            // Consume the components from stock
+            foreach (var bomItem in product.BOM)
+            {
+                var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == bomItem.ComponentSKU);
+                int consumedQuantity = bomItem.Quantity * order.Quantity;
+                
+                stockItem.Quantity -= consumedQuantity;
+                
+                // Record the stock history
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = bomItem.ComponentSKU,
+                    QuantityChange = -consumedQuantity,
+                    Action = "Production Consumed",
+                    Timestamp = DateTime.Now,
+                    Note = $"Consumed for order #{id} ({order.ProductSKU})"
+                });
+            }
+
+            // Add the produced item to stock
+            var productStockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == order.ProductSKU);
+            if (productStockItem == null)
+            {
+                productStockItem = new StockItem
+                {
+                    SKU = order.ProductSKU,
+                    Quantity = order.Quantity
+                };
+                _db.StockItems.Add(productStockItem);
+            }
+            else
+            {
+                productStockItem.Quantity += order.Quantity;
+            }
+
+            // Record the production in stock history
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = order.ProductSKU,
+                QuantityChange = order.Quantity,
+                Action = "Production Added",
+                Timestamp = DateTime.Now,
+                Note = $"Produced in order #{id}"
+            });
+
+            // Update the order status
+            order.Status = "Completed";
+            
+            await _db.SaveChangesAsync();
+            
+            return Ok(order);
+        }
+
+        // GET: api/productionorders/status-summary
+        [HttpGet("status-summary")]
+        public async Task<ActionResult<Dictionary<string, int>>> GetStatusSummary()
+        {
+            var orders = await _db.ProductionOrders.ToListAsync();
+            var summary = new Dictionary<string, int>();
+            
+            foreach (var order in orders)
+            {
+                if (!summary.ContainsKey(order.Status))
+                {
+                    summary[order.Status] = 0;
+                }
+                summary[order.Status]++;
+            }
+            
+            return summary;
+        }
+    }
+}

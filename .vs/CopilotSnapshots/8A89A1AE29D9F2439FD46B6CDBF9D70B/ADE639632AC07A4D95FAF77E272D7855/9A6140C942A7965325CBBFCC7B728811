@@ -1,0 +1,70 @@
+﻿using System;
+using Managing.Pages;
+using Managing.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+
+namespace Managing
+{
+    // A factory class for creating InventoryPage with dependency injection
+    public class InventoryPageFactory : ContentPage
+    {
+        private StockService _stockService;
+        
+        public InventoryPageFactory()
+        {
+            // Delay the actual page creation until we appear
+            this.Appearing += OnPageAppearing;
+        }
+        
+        private void OnPageAppearing(object sender, EventArgs e)
+        {
+            try
+            {
+                // Only create the page once
+                this.Appearing -= OnPageAppearing;
+                
+                // Get the service from DI
+                var services = Application.Current.Handler.MauiContext.Services;
+                _stockService = services.GetService<StockService>();
+                
+                if (_stockService == null)
+                {
+                    DisplayError("Stock service not available");
+                    return;
+                }
+                
+                // Create the actual InventoryPage with its dependency
+                var inventoryPage = new InventoryPage(_stockService);
+                
+                // Copy all content from the real page
+                this.Content = inventoryPage.Content;
+                this.Title = "Inventory";
+                
+                // Enable events to pass through to the real page
+                this.BindingContext = inventoryPage.BindingContext;
+            }
+            catch (Exception ex)
+            {
+                DisplayError($"Error loading inventory: {ex.Message}");
+            }
+        }
+        
+        private void DisplayError(string message)
+        {
+            this.Content = new VerticalStackLayout
+            {
+                Padding = 20,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = message,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+        }
+    }
+}

@@ -1,0 +1,11 @@
+﻿using CommunityToolkit.Maui;
+using Managing.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Managing;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Managing.Services;
+using Managing.Pages;
+using System.Diagnostics;
+
+public static class MauiProgram

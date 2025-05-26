@@ -1,0 +1,307 @@
+﻿using System;
+using Managing.Pages;
+using Managing.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+
+namespace Managing
+{
+    // A factory class for creating InventoryPage with dependency injection
+    public class InventoryPageFactory : ContentPage
+    {
+        private InventoryPage? _inventoryPage;
+        
+        public InventoryPageFactory()
+        {
+            Title = "Inventory";
+            Content = new StackLayout
+            {
+                Children = 
+                {
+                    new ActivityIndicator 
+                    { 
+                        IsRunning = true,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+            
+            // Delay the actual page creation until we appear
+            this.Appearing += OnPageAppearing;
+        }
+        
+        private async void OnPageAppearing(object sender, EventArgs e)
+        {
+            try
+            {
+                // Only create the page once
+                this.Appearing -= OnPageAppearing;
+                
+                // Get the StockService from DI through IServiceProvider
+                var services = IPlatformApplication.Current?.Services;
+                if (services == null)
+                {
+                    DisplayError("Service provider not available");
+                    return;
+                }
+                
+                var stockService = services.GetService<StockService>();
+                if (stockService == null)
+                {
+                    DisplayError("Stock service not available");
+                    return;
+                }
+                
+                // Instead of trying to copy content and hook up events, we'll create
+                // a simpler version with our own UI but use the StockService directly
+                
+                // Set up the page
+                Title = "Stock Management";
+                
+                var layout = new VerticalStackLayout
+                {
+                    Padding = new Thickness(20),
+                    Spacing = 16
+                };
+                
+                // Add header
+                layout.Children.Add(new Label
+                {
+                    Text = "Inventory",
+                    FontSize = 32,
+                    HorizontalOptions = LayoutOptions.Center
+                });
+                
+                // Add button
+                var addButton = new Button
+                {
+                    Text = "Add Item",
+                    HorizontalOptions = LayoutOptions.End
+                };
+                addButton.Clicked += OnAddItemClicked;
+                layout.Children.Add(addButton);
+                
+                // Set up CollectionView for stock items
+                var stockService2 = stockService;
+                var stockItems = new CollectionView
+                {
+                    SelectionMode = SelectionMode.None
+                };
+                
+                // Create grid for header
+                var headerGrid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                    {
+                        new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                        new ColumnDefinition { Width = GridLength.Auto },
+                        new ColumnDefinition { Width = GridLength.Auto }
+                    },
+                    Padding = new Thickness(0, 0, 0, 8)
+                };
+                
+                headerGrid.Add(new Label { Text = "SKU", FontAttributes = FontAttributes.Bold }, 0);
+                headerGrid.Add(new Label { Text = "Quantity", FontAttributes = FontAttributes.Bold }, 1);
+                headerGrid.Add(new Label { Text = "Edit", FontAttributes = FontAttributes.Bold }, 2);
+                headerGrid.Add(new Label { Text = "Delete", FontAttributes = FontAttributes.Bold }, 3);
+                
+                stockItems.Header = headerGrid;
+                
+                // Set up item template
+                stockItems.ItemTemplate = new DataTemplate(() =>
+                {
+                    var grid = new Grid
+                    {
+                        ColumnDefinitions = new ColumnDefinitionCollection
+                        {
+                            new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+                            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                            new ColumnDefinition { Width = GridLength.Auto },
+                            new ColumnDefinition { Width = GridLength.Auto }
+                        },
+                        Padding = new Thickness(0, 4)
+                    };
+                    
+                    var skuLabel = new Label();
+                    skuLabel.SetBinding(Label.TextProperty, "SKU");
+                    grid.Add(skuLabel, 0);
+                    
+                    var qtyLabel = new Label();
+                    qtyLabel.SetBinding(Label.TextProperty, "Quantity");
+                    grid.Add(qtyLabel, 1);
+                    
+                    var editButton = new Button { Text = "Edit" };
+                    editButton.SetBinding(Button.CommandParameterProperty, ".");
+                    editButton.Clicked += OnEditItemClicked;
+                    grid.Add(editButton, 2);
+                    
+                    var deleteButton = new Button { Text = "Delete" };
+                    deleteButton.SetBinding(Button.CommandParameterProperty, ".");
+                    deleteButton.Clicked += OnDeleteItemClicked;
+                    grid.Add(deleteButton, 3);
+                    
+                    return grid;
+                });
+                
+                // Add to layout
+                layout.Children.Add(stockItems);
+                
+                // Update the content
+                Content = layout;
+                
+                // Load the data
+                await LoadStockItems(stockItems, stockService);
+            }
+            catch (Exception ex)
+            {
+                DisplayError($"Error loading inventory: {ex.Message}");
+            }
+        }
+        
+        private async Task LoadStockItems(CollectionView collectionView, StockService stockService)
+        {
+            try
+            {
+                var items = await stockService.GetCurrentStockAsync();
+                collectionView.ItemsSource = new ObservableCollection<StockItem>(items);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load stock items: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnAddItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var services = IPlatformApplication.Current?.Services;
+                var stockService = services?.GetService<StockService>();
+                
+                if (stockService == null)
+                {
+                    await DisplayAlert("Error", "Stock service not available", "OK");
+                    return;
+                }
+                
+                string sku = await DisplayPromptAsync("Add Stock Item", "Enter SKU:");
+                if (string.IsNullOrWhiteSpace(sku)) return;
+                
+                string qtyStr = await DisplayPromptAsync("Add Stock Item", "Enter Quantity:", keyboard: Keyboard.Numeric);
+                if (!int.TryParse(qtyStr, out int qty) || qty < 0) return;
+                
+                await stockService.AddStockAsync(sku, qty);
+                
+                // Refresh the list
+                var collectionView = (Content as VerticalStackLayout)?.Children.LastOrDefault() as CollectionView;
+                if (collectionView != null)
+                {
+                    await LoadStockItems(collectionView, stockService);
+                }
+                
+                await DisplayAlert("Success", $"Added {qty} of {sku} to inventory", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to add item: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnEditItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn && btn.CommandParameter is StockItem item)
+                {
+                    var services = IPlatformApplication.Current?.Services;
+                    var stockService = services?.GetService<StockService>();
+                    
+                    if (stockService == null)
+                    {
+                        await DisplayAlert("Error", "Stock service not available", "OK");
+                        return;
+                    }
+                    
+                    string qtyStr = await DisplayPromptAsync($"Edit {item.SKU}", 
+                        "Enter new quantity:", 
+                        initialValue: item.Quantity.ToString(), 
+                        keyboard: Keyboard.Numeric);
+                    
+                    if (!int.TryParse(qtyStr, out int newQty) || newQty < 0) return;
+                    
+                    int diff = newQty - item.Quantity;
+                    if (diff == 0) return;
+                    
+                    if (diff > 0)
+                        await stockService.AddStockAsync(item.SKU, diff);
+                    else
+                        await stockService.ConsumeStockAsync(item.SKU, -diff);
+                    
+                    // Refresh the list
+                    var collectionView = (Content as VerticalStackLayout)?.Children.LastOrDefault() as CollectionView;
+                    if (collectionView != null)
+                    {
+                        await LoadStockItems(collectionView, stockService);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to edit item: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnDeleteItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn && btn.CommandParameter is StockItem item)
+                {
+                    var services = IPlatformApplication.Current?.Services;
+                    var stockService = services?.GetService<StockService>();
+                    
+                    if (stockService == null)
+                    {
+                        await DisplayAlert("Error", "Stock service not available", "OK");
+                        return;
+                    }
+                    
+                    bool confirm = await DisplayAlert("Delete", $"Delete {item.SKU}?", "Yes", "No");
+                    if (!confirm) return;
+                    
+                    await stockService.ConsumeStockAsync(item.SKU, item.Quantity);
+                    
+                    // Refresh the list
+                    var collectionView = (Content as VerticalStackLayout)?.Children.LastOrDefault() as CollectionView;
+                    if (collectionView != null)
+                    {
+                        await LoadStockItems(collectionView, stockService);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to delete item: {ex.Message}", "OK");
+            }
+        }
+        
+        private void DisplayError(string message)
+        {
+            this.Content = new VerticalStackLayout
+            {
+                Padding = 20,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = message,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+        }
+    }
+}

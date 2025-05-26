@@ -1,0 +1,49 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Managing.API.Models;
+
+namespace Managing.API.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        // Original entities
+        public DbSet<Product> Products { get; set; }
+        public DbSet<BOMItem> BOMItems { get; set; }
+        public DbSet<StockItem> StockItems { get; set; }
+        public DbSet<StockHistory> StockHistories { get; set; }
+        public DbSet<ProductionPrediction> ProductionPredictions { get; set; }
+        public DbSet<User> Users { get; set; }
+        
+        // Additional entities from signatures
+        public DbSet<MaterialReceipt> MaterialReceipts { get; set; }
+        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<InventoryItem> InventoryItems { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            // Configure the User entity to handle the Permissions list
+            modelBuilder.Entity<User>()
+                .Property(u => u.Permissions)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
+                    
+            // Seed a default admin user for testing
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Username = "admin",
+                    Password = "admin", // In production, this should be hashed
+                    Permissions = new List<string> { "Dashboard", "Inventory", "Production", "Receipt", "Admin" }
+                }
+            );
+        }
+    }
+}

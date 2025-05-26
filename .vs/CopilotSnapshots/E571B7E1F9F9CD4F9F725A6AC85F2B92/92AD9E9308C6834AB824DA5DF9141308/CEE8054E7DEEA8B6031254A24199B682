@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using Managing.Services;
+using Managing.Data;
+using Managing.Models;
+using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Managing.Pages
+{
+    public partial class InventoryPage : ContentPage
+    {
+        private readonly StockService _stockService;
+        private ObservableCollection<StockItem> _stockItems = new();
+        private ObservableCollection<StockHistory> _stockHistory = new();
+        private Entry _skuEntry;
+        private Entry _quantityEntry;
+        private Button _addButton;
+        private ListView _stockList;
+        private ListView _historyList;
+
+        public InventoryPage()
+        {
+            InitializeComponent();
+            var db = this.Handler?.MauiContext?.Services.GetService<ApplicationDbContext>();
+            _stockService = new StockService(db!);
+            BuildUI();
+            _ = LoadStock();
+            _ = LoadHistory();
+        }
+
+        private void BuildUI()
+        {
+            _skuEntry = new Entry { Placeholder = "SKU" };
+            _quantityEntry = new Entry { Placeholder = "Quantity", Keyboard = Keyboard.Numeric };
+            _addButton = new Button { Text = "Add Stock" };
+            _addButton.Clicked += async (s, e) => await AddStockAsync();
+            _stockList = new ListView { ItemsSource = _stockItems, ItemTemplate = new DataTemplate(() => new TextCell { Text = "{Binding SKU}", Detail = "{Binding Quantity}" }) };
+            _historyList = new ListView { ItemsSource = _stockHistory, ItemTemplate = new DataTemplate(() => new TextCell { Text = "{Binding SKU}", Detail = "{Binding Action} {Binding QuantityChange} at {Binding Timestamp}" }) };
+            Content = new ScrollView
+            {
+                Content = new VerticalStackLayout
+                {
+                    Padding = 20,
+                    Spacing = 10,
+                    Children =
+                    {
+                        new Label { Text = "Current Stock", FontSize = 24 },
+                        _stockList,
+                        new Label { Text = "Add Stock", FontSize = 18 },
+                        _skuEntry,
+                        _quantityEntry,
+                        _addButton,
+                        new Label { Text = "Stock History", FontSize = 18 },
+                        _historyList
+                    }
+                }
+            };
+        }
+
+        private async Task LoadStock()
+        {
+            _stockItems.Clear();
+            foreach (var item in await _stockService.GetCurrentStockAsync())
+                _stockItems.Add(item);
+        }
+
+        private async Task LoadHistory()
+        {
+            _stockHistory.Clear();
+            foreach (var h in await _stockService.GetStockHistoryAsync())
+                _stockHistory.Add(h);
+        }
+
+        private async Task AddStockAsync()
+        {
+            if (string.IsNullOrWhiteSpace(_skuEntry.Text) || !int.TryParse(_quantityEntry.Text, out int qty) || qty <= 0)
+                return;
+            await _stockService.AddStockAsync(_skuEntry.Text.Trim(), qty);
+            await LoadStock();
+            await LoadHistory();
+            _skuEntry.Text = string.Empty;
+            _quantityEntry.Text = string.Empty;
+        }
+    }
+}

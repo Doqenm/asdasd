@@ -1,0 +1,8 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Managing.Pages.InventoryPage">
+    <VerticalStackLayout Padding="20">
+        <Label Text="Inventory" FontSize="32" HorizontalOptions="Center"/>
+        <!-- Add more inventory content here -->
+    </VerticalStackLayout>
+</ContentPage>

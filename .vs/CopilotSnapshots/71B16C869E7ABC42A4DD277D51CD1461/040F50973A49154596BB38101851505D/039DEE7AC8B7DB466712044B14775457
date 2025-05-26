@@ -1,0 +1,183 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MaterialReceiptsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public MaterialReceiptsController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET: api/materialreceipts
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MaterialReceipt>>> GetMaterialReceipts()
+        {
+            return await _db.MaterialReceipts.ToListAsync();
+        }
+
+        // GET: api/materialreceipts/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MaterialReceipt>> GetMaterialReceipt(int id)
+        {
+            var receipt = await _db.MaterialReceipts.FindAsync(id);
+
+            if (receipt == null)
+            {
+                return NotFound();
+            }
+
+            return receipt;
+        }
+
+        // POST: api/materialreceipts
+        [HttpPost]
+        public async Task<ActionResult<MaterialReceipt>> CreateMaterialReceipt(MaterialReceipt receipt)
+        {
+            if (receipt == null)
+            {
+                return BadRequest("Receipt data is required");
+            }
+
+            receipt.ReceivedAt = DateTime.Now;
+            _db.MaterialReceipts.Add(receipt);
+            await _db.SaveChangesAsync();
+
+            // Update stock based on the receipt
+            var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == receipt.LotNumber);
+            if (stockItem == null)
+            {
+                stockItem = new StockItem
+                {
+                    SKU = receipt.LotNumber,
+                    Quantity = receipt.Quantity
+                };
+                _db.StockItems.Add(stockItem);
+            }
+            else
+            {
+                stockItem.Quantity += receipt.Quantity;
+            }
+
+            // Add stock history entry
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = receipt.LotNumber,
+                QuantityChange = receipt.Quantity,
+                Action = "Receipt",
+                Timestamp = DateTime.Now,
+                Note = $"Material receipt from {receipt.Supplier}"
+            });
+
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetMaterialReceipt), new { id = receipt.Id }, receipt);
+        }
+
+        // PUT: api/materialreceipts/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMaterialReceipt(int id, MaterialReceipt receipt)
+        {
+            if (id != receipt.Id)
+            {
+                return BadRequest();
+            }
+
+            // Determine the quantity difference
+            var originalReceipt = await _db.MaterialReceipts.FindAsync(id);
+            if (originalReceipt == null)
+            {
+                return NotFound();
+            }
+
+            int quantityDifference = receipt.Quantity - originalReceipt.Quantity;
+
+            // Update the material receipt
+            _db.Entry(originalReceipt).State = EntityState.Detached;
+            _db.Entry(receipt).State = EntityState.Modified;
+
+            try
+            {
+                await _db.SaveChangesAsync();
+
+                // Update stock based on the quantity difference
+                if (quantityDifference != 0)
+                {
+                    var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == receipt.LotNumber);
+                    if (stockItem != null)
+                    {
+                        stockItem.Quantity += quantityDifference;
+
+                        // Add stock history entry for the adjustment
+                        _db.StockHistories.Add(new StockHistory
+                        {
+                            SKU = receipt.LotNumber,
+                            QuantityChange = quantityDifference,
+                            Action = "Receipt Adjusted",
+                            Timestamp = DateTime.Now,
+                            Note = $"Material receipt {id} updated"
+                        });
+
+                        await _db.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _db.MaterialReceipts.AnyAsync(e => e.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/materialreceipts/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMaterialReceipt(int id)
+        {
+            var receipt = await _db.MaterialReceipts.FindAsync(id);
+            if (receipt == null)
+            {
+                return NotFound();
+            }
+
+            // Update stock based on the deleted receipt
+            var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == receipt.LotNumber);
+            if (stockItem != null && stockItem.Quantity >= receipt.Quantity)
+            {
+                stockItem.Quantity -= receipt.Quantity;
+
+                // Add stock history entry for the deletion
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = receipt.LotNumber,
+                    QuantityChange = -receipt.Quantity,
+                    Action = "Receipt Deleted",
+                    Timestamp = DateTime.Now,
+                    Note = $"Material receipt {id} deleted"
+                });
+            }
+
+            _db.MaterialReceipts.Remove(receipt);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+    }
+}

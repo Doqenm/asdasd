@@ -1,0 +1,69 @@
+﻿using CommunityToolkit.Maui;
+using Managing.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Managing;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Managing.Services;
+using Managing.Pages;
+using System.Diagnostics;
+
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+          .UseMauiApp<App>()
+          .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                // FontAwesome font registration removed temporarily
+            });
+
+        // Initialize SQLite provider
+        SQLitePCL.Batteries_V2.Init();
+            
+        // Configure EF Core SQLite
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "managing.db3");
+        builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+            opt.UseSqlite($"Data Source={dbPath}"));
+
+        // Register services
+        builder.Services.AddTransient<ProductService>();
+        builder.Services.AddTransient<ReceiptPageModel>();
+        builder.Services.AddTransient<DashboardPage>();
+        builder.Services.AddTransient<StockService>();
+        builder.Services.AddTransient<InventoryPage>();
+        // ... etc.
+
+        var app = builder.Build();
+
+        // Ensure database is created with error handling
+        try
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.EnsureCreated();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log or display the error for debugging
+            Debug.WriteLine($"Database initialization error: {ex.Message}");
+            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            
+            // If there's an inner exception, that often contains more detail
+            if (ex.InnerException != null)
+            {
+                Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                Debug.WriteLine($"Inner stack trace: {ex.InnerException.StackTrace}");
+            }
+        }
+
+        return app;
+    }
+}

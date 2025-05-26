@@ -1,0 +1,609 @@
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Managing.Models;
+using Managing.Pages;
+using Managing.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+
+namespace Managing
+{
+    // A factory class for creating InventoryPage with dependency injection
+    public class InventoryPageFactory : ContentPage
+    {
+        private InventoryPage? _inventoryPage;
+        private ObservableCollection<StockItemViewModel> _allItems = new(); // Store all items
+        private ObservableCollection<StockItemViewModel> _filteredItems = new(); // Store filtered items
+        private CollectionView? _stockItemsView;
+        private SearchBar? _searchBar;
+        private StockService? _stockService;
+        private ProductService? _productService;
+
+        public InventoryPageFactory()
+        {
+            Title = "Inventário";
+            Content = new StackLayout
+            {
+                Children = 
+                {
+                    new ActivityIndicator 
+                    { 
+                        IsRunning = true,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+            
+            // Delay the actual page creation until we appear
+            this.Appearing += OnPageAppearing;
+        }
+        
+        private async void OnPageAppearing(object sender, EventArgs e)
+        {
+            try
+            {
+                // Only create the page once
+                this.Appearing -= OnPageAppearing;
+                
+                // Get the services from DI through IServiceProvider
+                var services = IPlatformApplication.Current?.Services;
+                if (services == null)
+                {
+                    DisplayError("Serviço indisponível");
+                    return;
+                }
+                
+                _stockService = services.GetService<StockService>();
+                _productService = services.GetService<ProductService>();
+                
+                if (_stockService == null)
+                {
+                    DisplayError("Serviço de stock indisponível");
+                    return;
+                }
+                
+                if (_productService == null)
+                {
+                    DisplayError("Serviço de produtos indisponível");
+                    return;
+                }
+                
+                // Set up the page
+                Title = "Gestão de Inventário";
+                
+                var layout = new VerticalStackLayout
+                {
+                    Padding = new Thickness(20),
+                    Spacing = 16
+                };
+                
+                // Add header
+                layout.Children.Add(new Label
+                {
+                    Text = "Inventário",
+                    FontSize = 32,
+                    HorizontalOptions = LayoutOptions.Center
+                });
+
+                // Create a horizontal layout for the search bar and add button
+                var topControls = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                    {
+                        new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+                    },
+                    Margin = new Thickness(0, 0, 0, 10)
+                };
+
+                // Add search bar
+                _searchBar = new SearchBar 
+                { 
+                    Placeholder = "Pesquisar por SKU ou nome do produto...",
+                    HorizontalOptions = LayoutOptions.Fill,
+                    BackgroundColor = Colors.White,
+                    Margin = new Thickness(0, 0, 10, 0)
+                };
+                _searchBar.TextChanged += OnSearchTextChanged;
+                topControls.Add(_searchBar, 0);
+                
+                // Add button with better styling
+                var addButton = new Button
+                {
+                    Text = "Adicionar Item",
+                    HorizontalOptions = LayoutOptions.Fill,
+                    BackgroundColor = Colors.LightBlue,
+                    TextColor = Colors.Black,
+                    // Platform-specific styling
+                    HeightRequest = DeviceInfo.Platform == DevicePlatform.Android ? 50 : 40,
+                    Padding = DeviceInfo.Platform == DevicePlatform.Android ? new Thickness(12) : new Thickness(10)
+                };
+                addButton.Clicked += OnAddItemClicked;
+                topControls.Add(addButton, 1);
+                
+                // Add the controls to the layout
+                layout.Children.Add(topControls);
+                
+                // Create a ScrollView to ensure content is scrollable on smaller screens
+                var scrollView = new ScrollView();
+                
+                // Set up CollectionView for stock items
+                _stockItemsView = new CollectionView
+                {
+                    SelectionMode = SelectionMode.None,
+                    // Ensure proper sizing on all devices
+                    HeightRequest = DeviceInfo.Platform == DevicePlatform.Android ? 600 : 550
+                };
+                
+                // Create grid for header with platform-specific adjustments
+                var headerGrid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                    {
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },  // SKU
+                        new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },  // Product Name
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },  // Quantity
+                        new ColumnDefinition { Width = GridLength.Auto },  // Actions column
+                        new ColumnDefinition { Width = GridLength.Auto }   // Actions column
+                    },
+                    Padding = new Thickness(0, 0, 0, 8),
+                    BackgroundColor = DeviceInfo.Platform == DevicePlatform.Android ? 
+                        Color.FromArgb("#F5F5F5") : Colors.Transparent
+                };
+                
+                headerGrid.Add(new Label { 
+                    Text = "SKU", 
+                    FontAttributes = FontAttributes.Bold,
+                    FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 16 : 14
+                }, 0);
+                
+                headerGrid.Add(new Label { 
+                    Text = "Produto", 
+                    FontAttributes = FontAttributes.Bold,
+                    FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 16 : 14
+                }, 1);
+                
+                headerGrid.Add(new Label { 
+                    Text = "Quantidade", 
+                    FontAttributes = FontAttributes.Bold, 
+                    FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 16 : 14
+                }, 2);
+                
+                // Removed "Editar" and "Eliminar" header labels
+
+                _stockItemsView.Header = headerGrid;
+                
+                // Set up item template with platform-specific adjustments
+                _stockItemsView.ItemTemplate = new DataTemplate(() =>
+                {
+                    var grid = new Grid
+                    {
+                        ColumnDefinitions = new ColumnDefinitionCollection
+                        {
+                            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },  // SKU
+                            new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },  // Product Name
+                            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },  // Quantity
+                            new ColumnDefinition { Width = GridLength.Auto },  // Edit
+                            new ColumnDefinition { Width = GridLength.Auto }   // Delete
+                        },
+                        Padding = new Thickness(0, 4),
+                        ColumnSpacing = 10 // Increased spacing for touch targets
+                    };
+                    
+                    var skuLabel = new Label
+                    {
+                        LineBreakMode = LineBreakMode.TailTruncation,
+                        FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 15 : 14,
+                        VerticalOptions = LayoutOptions.Center
+                    };
+                    skuLabel.SetBinding(Label.TextProperty, "SKU");
+                    grid.Add(skuLabel, 0);
+                    
+                    var productNameLabel = new Label
+                    {
+                        LineBreakMode = LineBreakMode.TailTruncation,
+                        FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 15 : 14,
+                        VerticalOptions = LayoutOptions.Center
+                    };
+                    productNameLabel.SetBinding(Label.TextProperty, "ProductName");
+                    grid.Add(productNameLabel, 1);
+                    
+                    var qtyLabel = new Label
+                    {
+                        FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 15 : 14,
+                        VerticalOptions = LayoutOptions.Center
+                    };
+                    qtyLabel.SetBinding(Label.TextProperty, "Quantity");
+                    grid.Add(qtyLabel, 2);
+                    
+                    // Edit Button (Portuguese text)
+                    var editButton = new Button 
+                    { 
+                        Text = "Editar",
+                        TextColor = Colors.DarkBlue,
+                        BackgroundColor = Colors.Transparent,
+                        FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 16 : 14,
+                        HeightRequest = DeviceInfo.Platform == DevicePlatform.Android ? 35 : 30,
+                        WidthRequest = DeviceInfo.Platform == DevicePlatform.Android ? 60 : 55, 
+                        Padding = new Thickness(0),
+                        VerticalOptions = LayoutOptions.Center
+                    };
+                    editButton.SetBinding(Button.CommandParameterProperty, ".");
+                    editButton.Clicked += OnEditItemClicked;
+                    grid.Add(editButton, 3);
+                    
+                    // Delete Button (Portuguese text)
+                    var deleteButton = new Button 
+                    { 
+                        Text = "Eliminar",
+                        TextColor = Colors.DarkRed,
+                        BackgroundColor = Colors.Transparent,
+                        FontSize = DeviceInfo.Platform == DevicePlatform.Android ? 16 : 14,
+                        HeightRequest = DeviceInfo.Platform == DevicePlatform.Android ? 35 : 30,
+                        WidthRequest = DeviceInfo.Platform == DevicePlatform.Android ? 70 : 60,
+                        Padding = new Thickness(0),
+                        VerticalOptions = LayoutOptions.Center
+                    };
+                    deleteButton.SetBinding(Button.CommandParameterProperty, ".");
+                    deleteButton.Clicked += OnDeleteItemClicked;
+                    grid.Add(deleteButton, 4);
+                    
+                    return grid;
+                });
+                
+                // Add CollectionView to ScrollView
+                scrollView.Content = _stockItemsView;
+                
+                // Add ScrollView to layout
+                layout.Children.Add(scrollView);
+
+                // Add "No results" message (initially hidden)
+                var noResultsLabel = new Label
+                {
+                    Text = "Não foram encontrados itens correspondentes",
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center,
+                    FontSize = 18,
+                    TextColor = Colors.Gray,
+                    IsVisible = false
+                };
+                layout.Children.Add(noResultsLabel);
+                
+                // Update the content
+                Content = layout;
+                
+                // Load the data
+                await LoadStockItems();
+            }
+            catch (Exception ex)
+            {
+                DisplayError($"Erro ao carregar inventário: {ex.Message}");
+            }
+        }
+
+        // Method to handle search text changes
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_stockItemsView == null) return;
+            
+            string searchText = e.NewTextValue?.ToLowerInvariant() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                // Show all items
+                _filteredItems = new ObservableCollection<StockItemViewModel>(_allItems);
+            }
+            else
+            {
+                // Filter items by SKU or product name
+                _filteredItems = new ObservableCollection<StockItemViewModel>(
+                    _allItems.Where(item => 
+                        item.SKU.ToLowerInvariant().Contains(searchText) || 
+                        item.ProductName.ToLowerInvariant().Contains(searchText))
+                );
+            }
+            
+            // Update the collection view with filtered items
+            _stockItemsView.ItemsSource = _filteredItems;
+            
+            // Show/hide "No results" message if applicable
+            var noResultsLabel = FindNoResultsLabel();
+            if (noResultsLabel != null)
+            {
+                noResultsLabel.IsVisible = _filteredItems.Count == 0 && !string.IsNullOrWhiteSpace(searchText);
+            }
+        }
+        
+        private Label? FindNoResultsLabel()
+        {
+            if (Content is VerticalStackLayout layout)
+            {
+                return layout.Children.LastOrDefault() as Label;
+            }
+            return null;
+        }
+        
+        private async Task LoadStockItems()
+        {
+            if (_stockService == null || _productService == null || _stockItemsView == null)
+                return;
+
+            try
+            {
+                // Show loading indicator
+                var loadingIndicator = new ActivityIndicator
+                {
+                    IsRunning = true,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                
+                if (Content is VerticalStackLayout layout)
+                {
+                    // Ensure indicator is not added multiple times if LoadStockItems is called again
+                    var existingIndicator = layout.Children.OfType<ActivityIndicator>().FirstOrDefault();
+                    if (existingIndicator == null)
+                    {
+                        layout.Children.Add(loadingIndicator);
+                    }
+                    else
+                    {
+                        existingIndicator.IsVisible = true;
+                    }
+                }
+                
+                // Get stock items
+                var items = await _stockService.GetCurrentStockAsync();
+                
+                // Get all products to match SKUs with names
+                var products = await _productService.GetProductsAsync();
+                
+                // Create view models that include product names
+                _allItems = new ObservableCollection<StockItemViewModel>();
+                foreach (var item in items)
+                {
+                    // Find matching product for this SKU
+                    var product = products.FirstOrDefault(p => p.SKU == item.SKU);
+                    var productName = product?.Name ?? "Produto Desconhecido";
+                    
+                    _allItems.Add(new StockItemViewModel(item, productName));
+                }
+                
+                // Initialize filtered items with all items
+                _filteredItems = new ObservableCollection<StockItemViewModel>(_allItems);
+                
+                // Set the data source
+                _stockItemsView.ItemsSource = _filteredItems;
+                
+                // Apply any existing filter
+                if (_searchBar != null && !string.IsNullOrWhiteSpace(_searchBar.Text))
+                {
+                    OnSearchTextChanged(_searchBar, new TextChangedEventArgs(null, _searchBar.Text));
+                }
+                
+                // Remove loading indicator
+                if (Content is VerticalStackLayout layout2)
+                {
+                     var existingIndicator = layout2.Children.OfType<ActivityIndicator>().FirstOrDefault();
+                    if (existingIndicator != null)
+                    {
+                        existingIndicator.IsVisible = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Falha ao carregar itens de stock: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnAddItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var services = IPlatformApplication.Current?.Services;
+                var stockService = services?.GetService<StockService>();
+                var productService = services?.GetService<ProductService>();
+                
+                if (stockService == null || productService == null)
+                {
+                    await DisplayAlert("Erro", "Serviços indisponíveis", "OK");
+                    return;
+                }
+                
+                // Get list of products for selection
+                var products = await productService.GetProductsAsync();
+                if (products.Count == 0)
+                {
+                    // No products exist yet, ask for SKU directly
+                    string sku = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira o SKU:");
+                    if (string.IsNullOrWhiteSpace(sku)) return;
+                    
+                    string productName = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira o Nome do Produto:", initialValue: sku);
+                    if (string.IsNullOrWhiteSpace(productName)) productName = sku;
+                    
+                    // Create the product first
+                    await productService.AddOrUpdateProductAsync(new Product { SKU = sku, Name = productName });
+                    
+                    string qtyStr = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira a Quantidade:", keyboard: Keyboard.Numeric);
+                    if (!int.TryParse(qtyStr, out int qty) || qty < 0) return;
+                    
+                    await stockService.AddStockAsync(sku, qty);
+                }
+                else
+                {
+                    // Choose from existing products or create new
+                    string[] options = products.Select(p => $"{p.SKU} - {p.Name}").Append("Adicionar Novo Produto").ToArray();
+                    string result = await DisplayActionSheet("Selecionar Produto", "Cancelar", null, options);
+                    
+                    if (result == null || result == "Cancelar") return;
+                    
+                    string sku;
+                    if (result == "Adicionar Novo Produto")
+                    {
+                        sku = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira o SKU:");
+                        if (string.IsNullOrWhiteSpace(sku)) return;
+                        
+                        string productName = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira o Nome do Produto:", initialValue: sku);
+                        if (string.IsNullOrWhiteSpace(productName)) productName = sku;
+                        
+                        // Create the product first
+                        await productService.AddOrUpdateProductAsync(new Product { SKU = sku, Name = productName });
+                    }
+                    else
+                    {
+                        // Extract SKU from selected product
+                        sku = result.Split('-')[0].Trim();
+                    }
+                    
+                    string qtyStr = await DisplayPromptAsync("Adicionar Item ao Stock", "Insira a Quantidade:", keyboard: Keyboard.Numeric);
+                    if (!int.TryParse(qtyStr, out int qty) || qty < 0) return;
+                    
+                    await stockService.AddStockAsync(sku, qty);
+                }
+                
+                // Refresh the list
+                await LoadStockItems();
+                
+                await DisplayAlert("Sucesso", "Item adicionado ao inventário", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Falha ao adicionar item: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnEditItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn && btn.CommandParameter is StockItemViewModel item) // Changed to Button
+                {
+                    var services = IPlatformApplication.Current?.Services;
+                    var stockService = services?.GetService<StockService>();
+                    var productService = services?.GetService<ProductService>();
+                    
+                    if (stockService == null || productService == null)
+                    {
+                        await DisplayAlert("Erro", "Serviços indisponíveis", "OK");
+                        return;
+                    }
+                    
+                    // Let user choose to edit quantity or product name
+                    string action = await DisplayActionSheet(
+                        $"Editar {item.SKU} - {item.ProductName}", 
+                        "Cancelar", 
+                        null, 
+                        "Editar Quantidade", 
+                        "Editar Nome do Produto");
+                    
+                    if (action == "Editar Quantidade")
+                    {
+                        string qtyStr = await DisplayPromptAsync(
+                            $"Editar {item.SKU} - {item.ProductName}", 
+                            "Insira nova quantidade:", 
+                            initialValue: item.Quantity.ToString(), 
+                            keyboard: Keyboard.Numeric);
+                        
+                        if (!int.TryParse(qtyStr, out int newQty) || newQty < 0) return;
+                        
+                        int diff = newQty - item.Quantity;
+                        if (diff == 0) return;
+                        
+                        if (diff > 0)
+                            await stockService.AddStockAsync(item.SKU, diff);
+                        else
+                            await stockService.ConsumeStockAsync(item.SKU, -diff);
+                        
+                        await DisplayAlert("Sucesso", "Quantidade de stock atualizada", "OK");
+                    }
+                    else if (action == "Editar Nome do Produto")
+                    {
+                        // Get product info
+                        var product = await productService.GetProductBySKUAsync(item.SKU);
+                        if (product == null)
+                        {
+                            product = new Product { SKU = item.SKU, Name = item.ProductName };
+                        }
+                        
+                        // Update name
+                        string newName = await DisplayPromptAsync(
+                            $"Editar Produto {item.SKU}", 
+                            "Insira novo nome do produto:", 
+                            initialValue: product.Name);
+                        
+                        if (string.IsNullOrWhiteSpace(newName) || newName == product.Name) return;
+                        
+                        product.Name = newName;
+                        await productService.AddOrUpdateProductAsync(product);
+                        
+                        await DisplayAlert("Sucesso", "Nome do produto atualizado", "OK");
+                    }
+                    else
+                    {
+                        return; // Cancelled
+                    }
+                    
+                    // Refresh the list
+                    await LoadStockItems();
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Falha ao editar item: {ex.Message}", "OK");
+            }
+        }
+        
+        private async void OnDeleteItemClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn && btn.CommandParameter is StockItemViewModel item) // Changed to Button
+                {
+                    var services = IPlatformApplication.Current?.Services;
+                    var stockService = services?.GetService<StockService>();
+                    var productService = services?.GetService<ProductService>();
+                    
+                    if (stockService == null || productService == null)
+                    {
+                        await DisplayAlert("Erro", "Serviços indisponíveis", "OK");
+                        return;
+                    }
+                    
+                    bool confirm = await DisplayAlert("Eliminar", $"Eliminar {item.ProductName} ({item.SKU})?", "Sim", "Não");
+                    if (!confirm) return;
+                    
+                    await stockService.ConsumeStockAsync(item.SKU, item.Quantity);
+                    
+                    // Refresh the list
+                    await LoadStockItems();
+                    
+                    await DisplayAlert("Sucesso", "Item removido do inventário", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Falha ao eliminar item: {ex.Message}", "OK");
+            }
+        }
+        
+        private void DisplayError(string message)
+        {
+            this.Content = new VerticalStackLayout
+            {
+                Padding = 20,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = message,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                }
+            };
+        }
+    }
+}

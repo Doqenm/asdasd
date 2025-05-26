@@ -1,0 +1,55 @@
+﻿using Managing.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Managing.Services
+{
+    public class InventoryService
+    {
+        private readonly ApiService _apiService;
+
+        public InventoryService(ApiService apiService)
+        {
+            _apiService = apiService;
+        }
+
+        public async Task<List<InventoryItem>> GetInventoryItemsAsync()
+        {
+            return await _apiService.GetInventoryItemsAsync();
+        }
+
+        public async Task<InventoryItem?> GetInventoryItemByIdAsync(int id)
+        {
+            return await _apiService.GetInventoryItemByIdAsync(id);
+        }
+
+        public async Task<InventoryItem?> CreateInventoryItemAsync(string itemName, string sku, int quantity)
+        {
+            var item = new InventoryItem
+            {
+                ItemName = itemName,
+                SKU = sku,
+                Quantity = quantity,
+                LastUpdated = DateTime.Now
+            };
+
+            return await _apiService.CreateInventoryItemAsync(item);
+        }
+
+        public async Task<bool> UpdateInventoryItemAsync(InventoryItem item)
+        {
+            return await _apiService.UpdateInventoryItemAsync(item.Id, item);
+        }
+
+        public async Task<bool> DeleteInventoryItemAsync(int id)
+        {
+            return await _apiService.DeleteInventoryItemAsync(id);
+        }
+
+        public async Task<List<InventoryItem>> SearchInventoryItemsAsync(string query)
+        {
+            return await _apiService.SearchInventoryItemsAsync(query);
+        }
+    }
+}

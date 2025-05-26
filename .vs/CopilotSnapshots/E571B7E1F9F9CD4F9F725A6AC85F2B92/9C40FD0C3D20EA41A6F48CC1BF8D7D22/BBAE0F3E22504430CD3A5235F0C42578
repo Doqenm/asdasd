@@ -1,0 +1,31 @@
+﻿using Managing.Data;
+using Managing.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Managing.Services
+{
+    public class ProductService
+    {
+        private readonly ApplicationDbContext _db;
+        public ProductService(ApplicationDbContext db) => _db = db;
+
+        public async Task<List<Product>> GetProductsAsync() => await _db.Products.Include(p => p.BOM).ToListAsync();
+        public async Task<Product?> GetProductBySKUAsync(string sku) => await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == sku);
+        public async Task AddOrUpdateProductAsync(Product product)
+        {
+            var existing = await _db.Products.Include(p => p.BOM).FirstOrDefaultAsync(p => p.SKU == product.SKU);
+            if (existing == null)
+                _db.Products.Add(product);
+            else
+            {
+                existing.Name = product.Name;
+                existing.BOM = product.BOM;
+            }
+            await _db.SaveChangesAsync();
+        }
+        public async Task<List<BOMItem>> GetBOMForProductAsync(string sku) => (await GetProductBySKUAsync(sku))?.BOM ?? new List<BOMItem>();
+    }
+}

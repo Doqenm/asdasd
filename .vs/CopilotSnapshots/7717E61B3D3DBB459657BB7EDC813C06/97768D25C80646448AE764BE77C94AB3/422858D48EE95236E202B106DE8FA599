@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Managing.API.Data;
+using Managing.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Managing.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class StockController : ControllerBase
+    {
+        private readonly ApplicationDbContext _db;
+
+        public StockController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET: api/stock
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StockItem>>> GetCurrentStock()
+        {
+            return await _db.StockItems.ToListAsync();
+        }
+
+        // GET: api/stock/{sku}
+        [HttpGet("{sku}")]
+        public async Task<ActionResult<StockItem>> GetStockItem(string sku)
+        {
+            var stockItem = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == sku);
+
+            if (stockItem == null)
+            {
+                return NotFound();
+            }
+
+            return stockItem;
+        }
+
+        // POST: api/stock/add
+        [HttpPost("add")]
+        public async Task<ActionResult> AddStock([FromBody] StockUpdateRequest request)
+        {
+            if (string.IsNullOrEmpty(request.SKU) || request.Quantity <= 0)
+            {
+                return BadRequest("Invalid SKU or quantity.");
+            }
+
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == request.SKU);
+            if (item == null)
+            {
+                item = new StockItem { SKU = request.SKU, Quantity = 0 };
+                _db.StockItems.Add(item);
+            }
+
+            item.Quantity += request.Quantity;
+            
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = request.SKU,
+                QuantityChange = request.Quantity,
+                Action = "Received",
+                Timestamp = DateTime.Now,
+                Note = request.Note
+            });
+
+            await _db.SaveChangesAsync();
+            return Ok(item);
+        }
+
+        // POST: api/stock/consume
+        [HttpPost("consume")]
+        public async Task<ActionResult> ConsumeStock([FromBody] StockUpdateRequest request)
+        {
+            if (string.IsNullOrEmpty(request.SKU) || request.Quantity <= 0)
+            {
+                return BadRequest("Invalid SKU or quantity.");
+            }
+
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == request.SKU);
+            if (item == null || item.Quantity < request.Quantity)
+            {
+                return BadRequest("Not enough stock available.");
+            }
+
+            item.Quantity -= request.Quantity;
+            
+            _db.StockHistories.Add(new StockHistory
+            {
+                SKU = request.SKU,
+                QuantityChange = -request.Quantity,
+                Action = "Consumed",
+                Timestamp = DateTime.Now,
+                Note = request.Note
+            });
+
+            await _db.SaveChangesAsync();
+            return Ok(item);
+        }
+
+        // DELETE: api/stock/{sku}
+        [HttpDelete("{sku}")]
+        public async Task<ActionResult> DeleteStock(string sku, [FromQuery] string note = null)
+        {
+            var item = await _db.StockItems.FirstOrDefaultAsync(s => s.SKU == sku);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            // Record the deletion in history before deleting the item
+            int quantity = item.Quantity;
+            if (quantity > 0)
+            {
+                _db.StockHistories.Add(new StockHistory
+                {
+                    SKU = sku,
+                    QuantityChange = -quantity,
+                    Action = "Deleted",
+                    Timestamp = DateTime.Now,
+                    Note = note ?? "Item deleted from inventory"
+                });
+            }
+
+            // Remove the item from the StockItems table
+            _db.StockItems.Remove(item);
+
+            await _db.SaveChangesAsync();
+            return NoContent();
+        }
+
+        // GET: api/stock/history
+        [HttpGet("history")]
+        public async Task<ActionResult<IEnumerable<StockHistory>>> GetStockHistory()
+        {
+            return await _db.StockHistories.OrderByDescending(h => h.Timestamp).ToListAsync();
+        }
+    }
+
+    public class StockUpdateRequest
+    {
+        public string SKU { get; set; }
+        public int Quantity { get; set; }
+        public string? Note { get; set; }
+    }
+}

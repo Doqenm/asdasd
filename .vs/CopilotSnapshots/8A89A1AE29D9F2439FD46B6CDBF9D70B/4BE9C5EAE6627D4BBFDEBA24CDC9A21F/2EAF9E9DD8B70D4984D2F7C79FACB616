@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using Managing.Services;
+using Managing.Data;
+using Managing.Models;
+using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Managing.Pages
+{
+    public partial class InventoryPage : ContentPage
+    {
+        private readonly StockService _stockService;
+        private ObservableCollection<StockItem> _stockItems = new();
+        private ObservableCollection<StockHistory> _stockHistory = new();
+        private Entry _skuEntry;
+        private Entry _quantityEntry;
+        private Button _addButton;
+        private ListView _stockList;
+        private ListView _historyList;
+
+        public InventoryPage()
+        {
+            InitializeComponent();
+        }
+    }
+}

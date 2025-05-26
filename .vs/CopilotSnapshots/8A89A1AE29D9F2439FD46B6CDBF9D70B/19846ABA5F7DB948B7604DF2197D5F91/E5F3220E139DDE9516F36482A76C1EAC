@@ -1,0 +1,28 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Managing.Pages.InventoryPage">
+    <VerticalStackLayout Padding="20" Spacing="16">
+        <Label Text="Inventory" FontSize="32" HorizontalOptions="Center"/>
+        <Button Text="Add Item" Clicked="OnAddItemClicked" HorizontalOptions="End"/>
+        <CollectionView x:Name="StockCollectionView" ItemsSource="{Binding StockItems}" SelectionMode="None">
+            <CollectionView.Header>
+                <Grid ColumnDefinitions="2*,*,Auto,Auto" Padding="0,0,0,8">
+                    <Label Text="SKU" FontAttributes="Bold"/>
+                    <Label Text="Quantity" FontAttributes="Bold"/>
+                    <Label Text="Edit" FontAttributes="Bold"/>
+                    <Label Text="Delete" FontAttributes="Bold"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="2*,*,Auto,Auto" Padding="0,4">
+                        <Label Text="{Binding SKU}"/>
+                        <Label Text="{Binding Quantity}"/>
+                        <Button Text="Edit" Clicked="OnEditItemClicked" CommandParameter="{Binding}"/>
+                        <Button Text="Delete" Clicked="OnDeleteItemClicked" CommandParameter="{Binding}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

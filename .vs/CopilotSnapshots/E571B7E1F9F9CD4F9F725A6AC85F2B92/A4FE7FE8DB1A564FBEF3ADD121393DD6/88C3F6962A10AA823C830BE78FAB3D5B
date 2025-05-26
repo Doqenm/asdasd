@@ -1,0 +1,29 @@
+﻿using System.Collections.ObjectModel;
+using Managing.Models;
+using Managing.Services;
+
+namespace Managing.Pages;
+
+public partial class DashboardPage : ContentPage
+{
+    private readonly ProductService _productService;
+    private readonly ObservableCollection<Product> _products = new();
+
+    public DashboardPage(ProductService productService)
+    {
+        InitializeComponent();
+        this._productService = productService; // Use 'this' to disambiguate
+        BuildUI();
+        _ = LoadProductsAsync(); // Renamed method to avoid ambiguity
+    }
+
+    private async Task LoadProductsAsync() // Renamed method to avoid ambiguity
+    {
+        _products.Clear();
+        var products = await _productService.GetProductsAsync();
+        foreach (var p in products)
+        {
+            _products.Add(p);
+        }
+    }
+}

@@ -409,3 +409,7 @@ C:\Users\Utilizador\Documents\Managing\Managing\obj\Debug\net9.0-ios\iossimulato
 C:\Users\Utilizador\Documents\Managing\Managing\obj\Debug\net9.0-ios\iossimulator-x64\Managing.pdb
 C:\Users\Utilizador\Documents\Managing\Managing\obj\Debug\net9.0-ios\iossimulator-x64\Managing.genruntimeconfig.cache
 C:\Users\Utilizador\Documents\Managing\Managing\obj\Debug\net9.0-ios\iossimulator-x64\ref\Managing.dll
+C:\Users\Utilizador\Documents\Managing\Managing\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Maui.Controls.HotReload.Forms.dll
+C:\Users\Utilizador\Documents\Managing\Managing\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.VisualStudio.DesignTools.MobileTapContracts.dll
+C:\Users\Utilizador\Documents\Managing\Managing\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.VisualStudio.DesignTools.TapContract.dll
+C:\Users\Utilizador\Documents\Managing\Managing\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.VisualStudio.DesignTools.XamlTapContract.dll
